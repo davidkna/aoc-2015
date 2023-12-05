@@ -25,45 +25,44 @@ fn part_1(input: &[u8]) -> usize {
 }
 
 fn part_2(input: &[u8]) -> usize {
-    let (santa, robot) =
-        rayon::join(
-            || {
-                input
-                    .iter()
-                    .step_by(2)
-                    .scan((0, 0), |pos, &c| {
-                        let (x, y) = *pos;
-                        *pos = match c {
-                            b'>' => (x + 1, y),
-                            b'<' => (x - 1, y),
-                            b'^' => (x, y + 1),
-                            b'v' => (x, y - 1),
-                            _ => unreachable!("Invalid input"),
-                        };
-                        Some(*pos)
-                    })
-                    .chain(std::iter::once((0, 0)))
-                    .collect::<HashSet<_>>()
-            },
-            || {
-                input
-                    .iter()
-                    .skip(1)
-                    .step_by(2)
-                    .scan((0, 0), |pos, &c| {
-                        let (x, y) = *pos;
-                        *pos = match c {
-                            b'>' => (x + 1, y),
-                            b'<' => (x - 1, y),
-                            b'^' => (x, y + 1),
-                            b'v' => (x, y - 1),
-                            _ => unreachable!("Invalid input"),
-                        };
-                        Some(*pos)
-                    })
-                    .collect::<HashSet<_>>()
-            },
-        );
+    let (santa, robot) = rayon::join(
+        || {
+            input
+                .iter()
+                .step_by(2)
+                .scan((0, 0), |pos, &c| {
+                    let (x, y) = *pos;
+                    *pos = match c {
+                        b'>' => (x + 1, y),
+                        b'<' => (x - 1, y),
+                        b'^' => (x, y + 1),
+                        b'v' => (x, y - 1),
+                        _ => unreachable!("Invalid input"),
+                    };
+                    Some(*pos)
+                })
+                .chain(std::iter::once((0, 0)))
+                .collect::<HashSet<_>>()
+        },
+        || {
+            input
+                .iter()
+                .skip(1)
+                .step_by(2)
+                .scan((0, 0), |pos, &c| {
+                    let (x, y) = *pos;
+                    *pos = match c {
+                        b'>' => (x + 1, y),
+                        b'<' => (x - 1, y),
+                        b'^' => (x, y + 1),
+                        b'v' => (x, y - 1),
+                        _ => unreachable!("Invalid input"),
+                    };
+                    Some(*pos)
+                })
+                .collect::<HashSet<_>>()
+        },
+    );
 
     santa.union(&robot).count()
 }
